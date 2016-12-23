@@ -1,5 +1,7 @@
 ﻿{
   "version": "1.0.0",
+  "authors": [ "Vladimir Sinyavsky" ],
+  "description": "MongoDb persisted stores for IdentityServer4",
 
   "dependencies": {
     "AutoMapper": "5.2.0",
