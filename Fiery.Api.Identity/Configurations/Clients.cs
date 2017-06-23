@@ -11,7 +11,30 @@ namespace Fiery.Api.Identity.Configurations
         {
             return new List<Client>
             {
+                // client credentials grant client
+                new Client
+                {
+                    ClientId = "client.cc",
+                    AllowedGrantTypes = GrantTypes.ClientCredentials,
+                    ClientSecrets =
+                    {
+                        new Secret("fiery_secret".Sha256())
+                    },
+                    AllowedScopes = { "resources" }
+                },
 
+                // resource owner password grant client
+                new Client
+                {
+                    ClientId = "client.ro",
+                    AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
+
+                    ClientSecrets =
+                    {
+                        new Secret("fiery_secret".Sha256())
+                    },
+                    AllowedScopes = { "resources" }
+                }
             };
         }
     }

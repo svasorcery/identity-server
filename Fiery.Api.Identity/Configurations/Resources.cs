@@ -18,7 +18,7 @@ namespace Fiery.Api.Identity.Configurations
         {
             return new List<ApiResource>
             {
-
+                new ApiResource("resources", "Resources API")
             };
         }
 

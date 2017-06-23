@@ -17,6 +17,7 @@ namespace Fiery.Api.Identity
         {
             services.AddIdentityServer()
                 .AddTemporarySigningCredential()
+                .AddTestUsers(Configurations.Users.Get())
                 .AddInMemoryClients(Configurations.Clients.Get())
                 .AddInMemoryApiResources(Configurations.Resources.GetApi())
                 .AddInMemoryIdentityResources(Configurations.Resources.GetIdentity());
