@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.26430.14
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fiery.Api.Identity", "Fiery.Api.Identity\Fiery.Api.Identity.csproj", "{5DECAECD-E8D9-43C0-B5B5-18352A353B88}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fiery.Api.Resources", "Fiery.Api.Resources\Fiery.Api.Resources.csproj", "{6FB7584A-9645-47CB-B660-F201AB3B3BF6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,18 @@ Global
 		{5DECAECD-E8D9-43C0-B5B5-18352A353B88}.Release|x64.Build.0 = Release|Any CPU
 		{5DECAECD-E8D9-43C0-B5B5-18352A353B88}.Release|x86.ActiveCfg = Release|Any CPU
 		{5DECAECD-E8D9-43C0-B5B5-18352A353B88}.Release|x86.Build.0 = Release|Any CPU
+		{6FB7584A-9645-47CB-B660-F201AB3B3BF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6FB7584A-9645-47CB-B660-F201AB3B3BF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6FB7584A-9645-47CB-B660-F201AB3B3BF6}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6FB7584A-9645-47CB-B660-F201AB3B3BF6}.Debug|x64.Build.0 = Debug|Any CPU
+		{6FB7584A-9645-47CB-B660-F201AB3B3BF6}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6FB7584A-9645-47CB-B660-F201AB3B3BF6}.Debug|x86.Build.0 = Debug|Any CPU
+		{6FB7584A-9645-47CB-B660-F201AB3B3BF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6FB7584A-9645-47CB-B660-F201AB3B3BF6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6FB7584A-9645-47CB-B660-F201AB3B3BF6}.Release|x64.ActiveCfg = Release|Any CPU
+		{6FB7584A-9645-47CB-B660-F201AB3B3BF6}.Release|x64.Build.0 = Release|Any CPU
+		{6FB7584A-9645-47CB-B660-F201AB3B3BF6}.Release|x86.ActiveCfg = Release|Any CPU
+		{6FB7584A-9645-47CB-B660-F201AB3B3BF6}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
