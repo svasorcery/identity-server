@@ -21,6 +21,8 @@ namespace Fiery.Api.Identity
                 .AddInMemoryClients(Configurations.Clients.Get())
                 .AddInMemoryApiResources(Configurations.Resources.GetApi())
                 .AddInMemoryIdentityResources(Configurations.Resources.GetIdentity());
+            
+            services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -34,6 +36,10 @@ namespace Fiery.Api.Identity
             }
 
             app.UseIdentityServer();
+
+            app.UseStaticFiles();
+
+            app.UseMvcWithDefaultRoute();
         }
     }
 }
