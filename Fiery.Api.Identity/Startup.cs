@@ -21,8 +21,10 @@ namespace Fiery.Api.Identity
                 .AddInMemoryClients(Configurations.Clients.Get())
                 .AddInMemoryApiResources(Configurations.Resources.GetApi())
                 .AddInMemoryIdentityResources(Configurations.Resources.GetIdentity());
-            
-            services.AddMvc();
+
+            // Add Mvc with custom views location
+            services.AddMvc()
+                .AddRazorOptions(razor => razor.ViewLocationExpanders.Add(new UI.CustomViewLocationExpander()));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
