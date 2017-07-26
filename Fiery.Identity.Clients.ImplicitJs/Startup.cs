@@ -8,23 +8,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace Fiery.Api.Identity
+namespace Fiery.Identity.Clients.ImplicitJs
 {
     public class Startup
     {
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddIdentityServer()
-                .AddTemporarySigningCredential()
-                .AddTestUsers(Configurations.Users.Get())
-                .AddInMemoryClients(Configurations.Clients.Get())
-                .AddInMemoryApiResources(Configurations.Resources.GetApi())
-                .AddInMemoryIdentityResources(Configurations.Resources.GetIdentity());
-
-            // Add Mvc with custom views location
-            services.AddMvc()
-                .AddRazorOptions(razor => razor.ViewLocationExpanders.Add(new UI.CustomViewLocationExpander()));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -36,16 +26,10 @@ namespace Fiery.Api.Identity
             {
                 app.UseDeveloperExceptionPage();
             }
-            else
-            {
-                app.UseExceptionHandler("/Error");
-            }
-
-            app.UseIdentityServer();
+            
+            app.UseDefaultFiles();
 
             app.UseStaticFiles();
-
-            app.UseMvcWithDefaultRoute();
         }
     }
 }

@@ -1,15 +1,19 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.14
+VisualStudioVersion = 15.0.26430.16
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fiery.Api.Identity", "Fiery.Api.Identity\Fiery.Api.Identity.csproj", "{5DECAECD-E8D9-43C0-B5B5-18352A353B88}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fiery.Api.Resources", "Fiery.Api.Resources\Fiery.Api.Resources.csproj", "{6FB7584A-9645-47CB-B660-F201AB3B3BF6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fiery.Api.Resources", "Fiery.Api.Resources\Fiery.Api.Resources.csproj", "{6FB7584A-9645-47CB-B660-F201AB3B3BF6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fiery.Identity.Clients.ClientCredentials", "Fiery.Identity.Clients.ClientCredentials\Fiery.Identity.Clients.ClientCredentials.csproj", "{60350248-03E0-43C5-BD37-61F4FBFD463C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fiery.Identity.Clients.ClientCredentials", "Fiery.Identity.Clients.ClientCredentials\Fiery.Identity.Clients.ClientCredentials.csproj", "{60350248-03E0-43C5-BD37-61F4FBFD463C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fiery.Identity.Clients.ResourceOwner", "Fiery.Identity.Clients.ResourceOwner\Fiery.Identity.Clients.ResourceOwner.csproj", "{E8CC75A0-6263-4EC0-96CE-7A890921E2C6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fiery.Identity.Clients.ResourceOwner", "Fiery.Identity.Clients.ResourceOwner\Fiery.Identity.Clients.ResourceOwner.csproj", "{E8CC75A0-6263-4EC0-96CE-7A890921E2C6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fiery.Identity.Clients.ImplicitMvc", "Fiery.Identity.Clients.ImplicitMvc\Fiery.Identity.Clients.ImplicitMvc.csproj", "{CDCD5D4C-E476-4037-9168-64946B12DE40}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fiery.Identity.Clients.ImplicitJs", "Fiery.Identity.Clients.ImplicitJs\Fiery.Identity.Clients.ImplicitJs.csproj", "{1B561904-B2E2-4AF9-A06C-F2F8345AB65A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,6 +73,30 @@ Global
 		{E8CC75A0-6263-4EC0-96CE-7A890921E2C6}.Release|x64.Build.0 = Release|Any CPU
 		{E8CC75A0-6263-4EC0-96CE-7A890921E2C6}.Release|x86.ActiveCfg = Release|Any CPU
 		{E8CC75A0-6263-4EC0-96CE-7A890921E2C6}.Release|x86.Build.0 = Release|Any CPU
+		{CDCD5D4C-E476-4037-9168-64946B12DE40}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDCD5D4C-E476-4037-9168-64946B12DE40}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDCD5D4C-E476-4037-9168-64946B12DE40}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{CDCD5D4C-E476-4037-9168-64946B12DE40}.Debug|x64.Build.0 = Debug|Any CPU
+		{CDCD5D4C-E476-4037-9168-64946B12DE40}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CDCD5D4C-E476-4037-9168-64946B12DE40}.Debug|x86.Build.0 = Debug|Any CPU
+		{CDCD5D4C-E476-4037-9168-64946B12DE40}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDCD5D4C-E476-4037-9168-64946B12DE40}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CDCD5D4C-E476-4037-9168-64946B12DE40}.Release|x64.ActiveCfg = Release|Any CPU
+		{CDCD5D4C-E476-4037-9168-64946B12DE40}.Release|x64.Build.0 = Release|Any CPU
+		{CDCD5D4C-E476-4037-9168-64946B12DE40}.Release|x86.ActiveCfg = Release|Any CPU
+		{CDCD5D4C-E476-4037-9168-64946B12DE40}.Release|x86.Build.0 = Release|Any CPU
+		{1B561904-B2E2-4AF9-A06C-F2F8345AB65A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B561904-B2E2-4AF9-A06C-F2F8345AB65A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B561904-B2E2-4AF9-A06C-F2F8345AB65A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1B561904-B2E2-4AF9-A06C-F2F8345AB65A}.Debug|x64.Build.0 = Debug|Any CPU
+		{1B561904-B2E2-4AF9-A06C-F2F8345AB65A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1B561904-B2E2-4AF9-A06C-F2F8345AB65A}.Debug|x86.Build.0 = Debug|Any CPU
+		{1B561904-B2E2-4AF9-A06C-F2F8345AB65A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B561904-B2E2-4AF9-A06C-F2F8345AB65A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B561904-B2E2-4AF9-A06C-F2F8345AB65A}.Release|x64.ActiveCfg = Release|Any CPU
+		{1B561904-B2E2-4AF9-A06C-F2F8345AB65A}.Release|x64.Build.0 = Release|Any CPU
+		{1B561904-B2E2-4AF9-A06C-F2F8345AB65A}.Release|x86.ActiveCfg = Release|Any CPU
+		{1B561904-B2E2-4AF9-A06C-F2F8345AB65A}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

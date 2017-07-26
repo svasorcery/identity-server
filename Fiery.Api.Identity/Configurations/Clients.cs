@@ -34,6 +34,45 @@ namespace Fiery.Api.Identity.Configurations
                         new Secret("fiery_secret".Sha256())
                     },
                     AllowedScopes = { "resources" }
+                },
+
+                // implicit password grant client
+                new Client
+                {
+                    ClientId = "client.imp",
+                    ClientName = "MVC Client",
+                    AllowedGrantTypes = GrantTypes.Implicit,
+
+                    // where to redirect to after login
+                    RedirectUris = { "http://localhost:50301/signin-oidc" },
+
+                    // where to redirect to after logout
+                    PostLogoutRedirectUris = { "http://localhost:50301/signout-callback-oidc" },
+
+                    AllowedScopes = new List<string>
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile
+                    }
+                },
+
+                new Client
+                {
+                    ClientId = "client.js",
+                    ClientName = "JavaScript Client",
+                    AllowedGrantTypes = GrantTypes.Implicit,
+                    AllowAccessTokensViaBrowser = true,
+
+                    RedirectUris = { "http://localhost:50302/callback.html" },
+                    PostLogoutRedirectUris = { "http://localhost:50302/index.html" },
+                    AllowedCorsOrigins ={ "http://localhost:50302" },
+
+                    AllowedScopes =
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        "resources"
+                    }
                 }
             };
         }
