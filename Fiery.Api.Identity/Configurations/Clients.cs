@@ -54,6 +54,25 @@ namespace Fiery.Api.Identity.Configurations
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile
                     }
+                },
+
+                new Client
+                {
+                    ClientId = "client.js",
+                    ClientName = "JavaScript Client",
+                    AllowedGrantTypes = GrantTypes.Implicit,
+                    AllowAccessTokensViaBrowser = true,
+
+                    RedirectUris = { "http://localhost:50302/callback.html" },
+                    PostLogoutRedirectUris = { "http://localhost:50302/index.html" },
+                    AllowedCorsOrigins ={ "http://localhost:50302" },
+
+                    AllowedScopes =
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        "resources"
+                    }
                 }
             };
         }
