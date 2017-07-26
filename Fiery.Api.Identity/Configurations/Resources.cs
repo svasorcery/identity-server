@@ -10,7 +10,8 @@ namespace Fiery.Api.Identity.Configurations
         {
             return new List<IdentityResource>
             {
-
+                new IdentityResources.OpenId(),
+                new IdentityResources.Profile(),
             };
         }
 
