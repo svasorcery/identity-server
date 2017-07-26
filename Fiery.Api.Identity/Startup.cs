@@ -36,6 +36,10 @@ namespace Fiery.Api.Identity
             {
                 app.UseDeveloperExceptionPage();
             }
+            else
+            {
+                app.UseExceptionHandler("/Error");
+            }
 
             app.UseIdentityServer();
 
