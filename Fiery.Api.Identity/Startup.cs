@@ -1,8 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using IdentityServer4;
+using Microsoft.AspNetCore.Authentication.Facebook;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication.MicrosoftAccount;
+using Microsoft.AspNetCore.Authentication.Twitter;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -48,26 +53,34 @@ namespace Fiery.Api.Identity
             app.UseGoogleAuthentication(new GoogleOptions
             {
                 DisplayName = "Google",
-                AuthenticationScheme = "Google",
+                AuthenticationScheme = GoogleDefaults.AuthenticationScheme,
                 SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
                 ClientId = "986969870699-fkd5cmus27hbcn9ijuhep73cbd6acuhf.apps.googleusercontent.com",
                 ClientSecret = "oozJVDLbu5yUcvp-VBALjJMl"
             });
-            app.UseFacebookAuthentication(new FacebookOptions
+            app.UseMicrosoftAccountAuthentication(new MicrosoftAccountOptions
             {
-                DisplayName = "Facebook",
-                AuthenticationScheme = "Facebook",
+                DisplayName = "Microsoft",
+                AuthenticationScheme = MicrosoftAccountDefaults.AuthenticationScheme,
                 SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
-                ClientId = "291849607954027",
-                ClientSecret = "971f72cf26b226c3122335d3928ce9cf"
+                ClientId = "556abe8c-6ffe-4bd9-b093-5c55e9e8e077",
+                ClientSecret = "nS9JXh7jRMSYYvYVemomKun"
             });
             app.UseTwitterAuthentication(new TwitterOptions
             {
                 DisplayName = "Twitter",
-                AuthenticationScheme = "Twitter",
+                AuthenticationScheme = TwitterDefaults.AuthenticationScheme,
                 SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
                 ConsumerKey = "oG3KAhAEv4pRc017w0gCDKo3S",
                 ConsumerSecret = "VR7yBqMG9WsIHJ3YNcFJmQL289mpAyh6DxphE8iLdgmL16BCH1"
+            });
+            app.UseFacebookAuthentication(new FacebookOptions
+            {
+                DisplayName = "Facebook",
+                AuthenticationScheme = FacebookDefaults.AuthenticationScheme,
+                SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
+                ClientId = "291849607954027",
+                ClientSecret = "971f72cf26b226c3122335d3928ce9cf"
             });
 
             app.UseStaticFiles();
