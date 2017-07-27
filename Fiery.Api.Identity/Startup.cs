@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using IdentityServer4;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -42,6 +43,17 @@ namespace Fiery.Api.Identity
             }
 
             app.UseIdentityServer();
+
+            // TODO: move options to configuration
+            app.UseGoogleAuthentication(new GoogleOptions
+            {
+                DisplayName = "Google",
+                AuthenticationScheme = "Google",
+                SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
+
+                ClientId = "986969870699-fkd5cmus27hbcn9ijuhep73cbd6acuhf.apps.googleusercontent.com",
+                ClientSecret = "oozJVDLbu5yUcvp-VBALjJMl"
+            });
 
             app.UseStaticFiles();
 
