@@ -50,9 +50,16 @@ namespace Fiery.Api.Identity
                 DisplayName = "Google",
                 AuthenticationScheme = "Google",
                 SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
-
                 ClientId = "986969870699-fkd5cmus27hbcn9ijuhep73cbd6acuhf.apps.googleusercontent.com",
                 ClientSecret = "oozJVDLbu5yUcvp-VBALjJMl"
+            });
+            app.UseFacebookAuthentication(new FacebookOptions
+            {
+                DisplayName = "Facebook",
+                AuthenticationScheme = "Facebook",
+                SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
+                ClientId = "291849607954027",
+                ClientSecret = "971f72cf26b226c3122335d3928ce9cf"
             });
 
             app.UseStaticFiles();
