@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Authentication.Twitter;
 using Microsoft.AspNetCore.Authentication.Facebook;
 using Microsoft.AspNetCore.Authentication.MicrosoftAccount;
 using AspNet.Security.OAuth.GitHub;
+using AspNet.Security.OAuth.Vkontakte;
 
 namespace Fiery.Api.Identity
 {
@@ -90,6 +91,14 @@ namespace Fiery.Api.Identity
                 SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
                 ClientId = "Iv1.52c19095558a1a01",
                 ClientSecret = "a53df8ef268014527d5718cc043e16bce07753ee",
+            });
+            app.UseVkontakteAuthentication(new VkontakteAuthenticationOptions
+            {
+                DisplayName = "VK",
+                AuthenticationScheme = VkontakteAuthenticationDefaults.AuthenticationScheme,
+                SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
+                ClientId = "6128333",
+                ClientSecret = "KDx5VB6TbgEcIORvDnw0",
             });
 
             app.UseStaticFiles();
