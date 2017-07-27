@@ -61,6 +61,14 @@ namespace Fiery.Api.Identity
                 ClientId = "291849607954027",
                 ClientSecret = "971f72cf26b226c3122335d3928ce9cf"
             });
+            app.UseTwitterAuthentication(new TwitterOptions
+            {
+                DisplayName = "Twitter",
+                AuthenticationScheme = "Twitter",
+                SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
+                ConsumerKey = "oG3KAhAEv4pRc017w0gCDKo3S",
+                ConsumerSecret = "VR7yBqMG9WsIHJ3YNcFJmQL289mpAyh6DxphE8iLdgmL16BCH1"
+            });
 
             app.UseStaticFiles();
 
