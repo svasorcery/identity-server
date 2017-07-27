@@ -3,16 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using IdentityServer4;
-using Microsoft.AspNetCore.Authentication.Facebook;
-using Microsoft.AspNetCore.Authentication.Google;
-using Microsoft.AspNetCore.Authentication.MicrosoftAccount;
-using Microsoft.AspNetCore.Authentication.Twitter;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using IdentityServer4;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication.Twitter;
+using Microsoft.AspNetCore.Authentication.Facebook;
+using Microsoft.AspNetCore.Authentication.MicrosoftAccount;
+using AspNet.Security.OAuth.GitHub;
 
 namespace Fiery.Api.Identity
 {
@@ -81,6 +82,14 @@ namespace Fiery.Api.Identity
                 SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
                 ClientId = "291849607954027",
                 ClientSecret = "971f72cf26b226c3122335d3928ce9cf"
+            });
+            app.UseGitHubAuthentication(new GitHubAuthenticationOptions
+            {
+                DisplayName = "GitHub",
+                AuthenticationScheme = GitHubAuthenticationDefaults.AuthenticationScheme,
+                SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
+                ClientId = "Iv1.52c19095558a1a01",
+                ClientSecret = "a53df8ef268014527d5718cc043e16bce07753ee",
             });
 
             app.UseStaticFiles();
