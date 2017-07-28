@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
 using IdentityServer4;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.Twitter;
@@ -20,6 +21,24 @@ namespace Fiery.Api.Identity
 {
     public class Startup
     {
+        private IConfigurationRoot Configuration { get; }
+
+        public Startup(IHostingEnvironment env)
+        {
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(env.ContentRootPath)
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
+                .AddEnvironmentVariables();
+
+            //if (env.IsDevelopment())
+            //{
+            //    builder.AddUserSecrets<Startup>();
+            //}
+
+            Configuration = builder.Build();
+        }
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -51,54 +70,54 @@ namespace Fiery.Api.Identity
 
             app.UseIdentityServer();
 
-            // TODO: move options to configuration
+            // TODO: move options to separate library
             app.UseGoogleAuthentication(new GoogleOptions
             {
-                DisplayName = "Google",
+                DisplayName = Configuration["Authentication:ExternalProviders:Google:Name"],
+                ClientId = Configuration["Authentication:ExternalProviders:Google:ClientId"],
+                ClientSecret = Configuration["Authentication:ExternalProviders:Google:ClientSecret"],
                 AuthenticationScheme = GoogleDefaults.AuthenticationScheme,
-                SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
-                ClientId = "986969870699-fkd5cmus27hbcn9ijuhep73cbd6acuhf.apps.googleusercontent.com",
-                ClientSecret = "oozJVDLbu5yUcvp-VBALjJMl"
+                SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme
             });
             app.UseMicrosoftAccountAuthentication(new MicrosoftAccountOptions
             {
-                DisplayName = "Microsoft",
+                DisplayName = Configuration["Authentication:ExternalProviders:Microsoft:Name"],
+                ClientId = Configuration["Authentication:ExternalProviders:Microsoft:ClientId"],
+                ClientSecret = Configuration["Authentication:ExternalProviders:Microsoft:ClientSecret"],
                 AuthenticationScheme = MicrosoftAccountDefaults.AuthenticationScheme,
-                SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
-                ClientId = "556abe8c-6ffe-4bd9-b093-5c55e9e8e077",
-                ClientSecret = "nS9JXh7jRMSYYvYVemomKun"
+                SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme
             });
             app.UseTwitterAuthentication(new TwitterOptions
             {
-                DisplayName = "Twitter",
+                DisplayName = Configuration["Authentication:ExternalProviders:Twitter:Name"],
+                ConsumerKey = Configuration["Authentication:ExternalProviders:Twitter:ClientId"],
+                ConsumerSecret = Configuration["Authentication:ExternalProviders:Twitter:ClientSecret"],
                 AuthenticationScheme = TwitterDefaults.AuthenticationScheme,
-                SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
-                ConsumerKey = "oG3KAhAEv4pRc017w0gCDKo3S",
-                ConsumerSecret = "VR7yBqMG9WsIHJ3YNcFJmQL289mpAyh6DxphE8iLdgmL16BCH1"
+                SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme
             });
             app.UseFacebookAuthentication(new FacebookOptions
             {
-                DisplayName = "Facebook",
+                DisplayName = Configuration["Authentication:ExternalProviders:Facebook:Name"],
+                ClientId = Configuration["Authentication:ExternalProviders:Facebook:ClientId"],
+                ClientSecret = Configuration["Authentication:ExternalProviders:Facebook:ClientSecret"],
                 AuthenticationScheme = FacebookDefaults.AuthenticationScheme,
-                SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
-                ClientId = "291849607954027",
-                ClientSecret = "971f72cf26b226c3122335d3928ce9cf"
+                SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme
             });
             app.UseGitHubAuthentication(new GitHubAuthenticationOptions
             {
-                DisplayName = "GitHub",
+                DisplayName = Configuration["Authentication:ExternalProviders:GitHub:Name"],
+                ClientId = Configuration["Authentication:ExternalProviders:GitHub:ClientId"],
+                ClientSecret = Configuration["Authentication:ExternalProviders:GitHub:ClientSecret"],
                 AuthenticationScheme = GitHubAuthenticationDefaults.AuthenticationScheme,
-                SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
-                ClientId = "Iv1.52c19095558a1a01",
-                ClientSecret = "a53df8ef268014527d5718cc043e16bce07753ee",
+                SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme
             });
             app.UseVkontakteAuthentication(new VkontakteAuthenticationOptions
             {
-                DisplayName = "VK",
+                DisplayName = Configuration["Authentication:ExternalProviders:VK:Name"],
+                ClientId = Configuration["Authentication:ExternalProviders:VK:ClientId"],
+                ClientSecret = Configuration["Authentication:ExternalProviders:VK:ClientSecret"],
                 AuthenticationScheme = VkontakteAuthenticationDefaults.AuthenticationScheme,
-                SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
-                ClientId = "6128333",
-                ClientSecret = "KDx5VB6TbgEcIORvDnw0",
+                SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme
             });
 
             app.UseStaticFiles();
