@@ -9,13 +9,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
-using IdentityServer4;
-using Microsoft.AspNetCore.Authentication.Google;
-using Microsoft.AspNetCore.Authentication.Twitter;
-using Microsoft.AspNetCore.Authentication.Facebook;
-using Microsoft.AspNetCore.Authentication.MicrosoftAccount;
-using AspNet.Security.OAuth.GitHub;
-using AspNet.Security.OAuth.Vkontakte;
 
 namespace Fiery.Api.Identity
 {
@@ -69,56 +62,13 @@ namespace Fiery.Api.Identity
             }
 
             app.UseIdentityServer();
-
-            // TODO: move options to separate library
-            app.UseGoogleAuthentication(new GoogleOptions
-            {
-                DisplayName = Configuration["Authentication:ExternalProviders:Google:Name"],
-                ClientId = Configuration["Authentication:ExternalProviders:Google:ClientId"],
-                ClientSecret = Configuration["Authentication:ExternalProviders:Google:ClientSecret"],
-                AuthenticationScheme = GoogleDefaults.AuthenticationScheme,
-                SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme
-            });
-            app.UseMicrosoftAccountAuthentication(new MicrosoftAccountOptions
-            {
-                DisplayName = Configuration["Authentication:ExternalProviders:Microsoft:Name"],
-                ClientId = Configuration["Authentication:ExternalProviders:Microsoft:ClientId"],
-                ClientSecret = Configuration["Authentication:ExternalProviders:Microsoft:ClientSecret"],
-                AuthenticationScheme = MicrosoftAccountDefaults.AuthenticationScheme,
-                SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme
-            });
-            app.UseTwitterAuthentication(new TwitterOptions
-            {
-                DisplayName = Configuration["Authentication:ExternalProviders:Twitter:Name"],
-                ConsumerKey = Configuration["Authentication:ExternalProviders:Twitter:ClientId"],
-                ConsumerSecret = Configuration["Authentication:ExternalProviders:Twitter:ClientSecret"],
-                AuthenticationScheme = TwitterDefaults.AuthenticationScheme,
-                SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme
-            });
-            app.UseFacebookAuthentication(new FacebookOptions
-            {
-                DisplayName = Configuration["Authentication:ExternalProviders:Facebook:Name"],
-                ClientId = Configuration["Authentication:ExternalProviders:Facebook:ClientId"],
-                ClientSecret = Configuration["Authentication:ExternalProviders:Facebook:ClientSecret"],
-                AuthenticationScheme = FacebookDefaults.AuthenticationScheme,
-                SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme
-            });
-            app.UseGitHubAuthentication(new GitHubAuthenticationOptions
-            {
-                DisplayName = Configuration["Authentication:ExternalProviders:GitHub:Name"],
-                ClientId = Configuration["Authentication:ExternalProviders:GitHub:ClientId"],
-                ClientSecret = Configuration["Authentication:ExternalProviders:GitHub:ClientSecret"],
-                AuthenticationScheme = GitHubAuthenticationDefaults.AuthenticationScheme,
-                SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme
-            });
-            app.UseVkontakteAuthentication(new VkontakteAuthenticationOptions
-            {
-                DisplayName = Configuration["Authentication:ExternalProviders:VK:Name"],
-                ClientId = Configuration["Authentication:ExternalProviders:VK:ClientId"],
-                ClientSecret = Configuration["Authentication:ExternalProviders:VK:ClientSecret"],
-                AuthenticationScheme = VkontakteAuthenticationDefaults.AuthenticationScheme,
-                SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme
-            });
+            
+            app.UseGoogleAuthentication(Configuration.GetSection("Authentication:ExternalProviders:Google"));
+            app.UseMicrosoftAccountAuthentication(Configuration.GetSection("Authentication:ExternalProviders:Microsoft"));
+            app.UseTwitterAuthentication(Configuration.GetSection("Authentication:ExternalProviders:Twitter"));
+            app.UseFacebookAuthentication(Configuration.GetSection("Authentication:ExternalProviders:Facebook"));
+            app.UseGitHubAuthentication(Configuration.GetSection("Authentication:ExternalProviders:GitHub"));
+            app.UseVkontakteAuthentication(Configuration.GetSection("Authentication:ExternalProviders:VK"));
 
             app.UseStaticFiles();
 
