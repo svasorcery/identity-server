@@ -63,12 +63,7 @@ namespace Fiery.Api.Identity
 
             app.UseIdentityServer();
             
-            app.UseGoogleAuthentication(Configuration.GetSection("Authentication:ExternalProviders:Google"));
-            app.UseMicrosoftAccountAuthentication(Configuration.GetSection("Authentication:ExternalProviders:Microsoft"));
-            app.UseTwitterAuthentication(Configuration.GetSection("Authentication:ExternalProviders:Twitter"));
-            app.UseFacebookAuthentication(Configuration.GetSection("Authentication:ExternalProviders:Facebook"));
-            app.UseGitHubAuthentication(Configuration.GetSection("Authentication:ExternalProviders:GitHub"));
-            app.UseVkontakteAuthentication(Configuration.GetSection("Authentication:ExternalProviders:VK"));
+            app.UseExternalAuthentication(Configuration.GetSection("Authentication:ExternalProviders"));
 
             app.UseStaticFiles();
 
