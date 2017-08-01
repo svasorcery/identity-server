@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Fiery.Identity.Clients.External\Fiery.Identity.Clients.External.csproj" />
+    <ProjectReference Include="..\Fiery.Identity.Users.External\Fiery.Identity.Users.External.csproj" />
   </ItemGroup>
 
 </Project>
