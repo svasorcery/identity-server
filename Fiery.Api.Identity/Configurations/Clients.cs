@@ -39,21 +39,25 @@ namespace Fiery.Api.Identity.Configurations
                 // implicit password grant client
                 new Client
                 {
-                    ClientId = "client.imp",
+                    ClientId = "client.mvc",
                     ClientName = "MVC Client",
-                    AllowedGrantTypes = GrantTypes.Implicit,
+                    AllowedGrantTypes = GrantTypes.HybridAndClientCredentials,
 
-                    // where to redirect to after login
+                    ClientSecrets =
+                    {
+                        new Secret("fiery_secret".Sha256())
+                    },
+                    
                     RedirectUris = { "http://localhost:50301/signin-oidc" },
-
-                    // where to redirect to after logout
                     PostLogoutRedirectUris = { "http://localhost:50301/signout-callback-oidc" },
 
                     AllowedScopes = new List<string>
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
-                        IdentityServerConstants.StandardScopes.Profile
-                    }
+                        IdentityServerConstants.StandardScopes.Profile,
+                        "resources"
+                    },
+                    AllowOfflineAccess = true
                 },
 
                 new Client
