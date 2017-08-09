@@ -1,9 +1,38 @@
-﻿<h2>Secured</h2>
+﻿@using Microsoft.AspNetCore.Authentication;
+@{
+    ViewData["Title"] = "Secure";
+}
+<h2>@ViewData["Title"]</h2>
 
-<dl>
+@if (User.Identity.IsAuthenticated)
+{
+    <div><b>User Name:</b> @User.Claims.FirstOrDefault(x => x.Type == "name").Value</div>
+    <a asp-controller="Home" asp-action="Logout">Выход</a>
+}
+
+<h3>User claims</h3>
+
+<div style="padding:10px 0px 25px 0px">
+    <div><a asp-action="CallApiUsingClientCredentials">Call API using application identity</a></div>
+    <div><a asp-action="CallApiUsingUserAccessToken">Call API using user token</a></div>
+</div>
+
+<ul class="list-group">
     @foreach (var claim in User.Claims)
     {
-        <dt>@claim.Type</dt>
-        <dd>@claim.Value</dd>
+        <li class="list-group-item">
+            <label>@claim.Type</label>
+            <code>@claim.Value</code>
+        </li>
+
     }
-</dl>
+    <li class="list-group-item">
+        <label>access token</label>
+        <code style="word-wrap:break-word;">@await ViewContext.HttpContext.Authentication.GetTokenAsync("access_token")</code>
+    </li>
+
+    <li class="list-group-item">
+        <label>refresh token</label>
+        <code>@await ViewContext.HttpContext.Authentication.GetTokenAsync("refresh_token")</code>
+    </li>
+</ul>
