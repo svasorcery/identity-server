@@ -36,11 +36,14 @@ namespace Fiery.Api.Identity
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddIdentityServer()
-                .AddTemporarySigningCredential()
+                .AddDeveloperSigningCredential()
                 .AddTestUsers(Configurations.Users.Get())
                 .AddInMemoryClients(Configurations.Clients.Get())
                 .AddInMemoryApiResources(Configurations.Resources.GetApi())
                 .AddInMemoryIdentityResources(Configurations.Resources.GetIdentity());
+
+            services.AddAuthentication()
+                .AddExternal(Configuration.GetSection("Authentication:ExternalProviders"));
 
             // Add Mvc with custom views location
             services.AddMvc()
@@ -62,8 +65,8 @@ namespace Fiery.Api.Identity
             }
 
             app.UseIdentityServer();
-            
-            app.UseExternalAuthentication(Configuration.GetSection("Authentication:ExternalProviders"));
+
+            app.UseAuthentication();
 
             app.UseStaticFiles();
 

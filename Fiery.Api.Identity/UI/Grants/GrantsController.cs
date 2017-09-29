@@ -5,14 +5,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Fiery.Api.Identity.Filters;
+using Fiery.Api.Identity.UI;
 
-namespace Fiery.Api.Identity.UI
+namespace IdentityServer4.Quickstart.UI
 {
     /// <summary>
     /// This sample controller allows a user to revoke grants given to clients
     /// </summary>
-    [Filters.SecurityHeaders]
-    [Authorize(ActiveAuthenticationSchemes = IdentityServer4.IdentityServerConstants.DefaultCookieAuthenticationScheme)]
+    [SecurityHeaders]
+    [Authorize(AuthenticationSchemes = IdentityServer4.IdentityServerConstants.DefaultCookieAuthenticationScheme)]
     public class GrantsController : Controller
     {
         private readonly IIdentityServerInteractionService _interaction;
@@ -45,10 +47,10 @@ namespace Fiery.Api.Identity.UI
         public async Task<IActionResult> Revoke(string clientId)
         {
             await _interaction.RevokeUserConsentAsync(clientId);
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index");
         }
 
-        async Task<GrantsViewModel> BuildViewModelAsync()
+        private async Task<GrantsViewModel> BuildViewModelAsync()
         {
             var grants = await _interaction.GetAllUserConsentsAsync();
 
@@ -69,7 +71,7 @@ namespace Fiery.Api.Identity.UI
                         Created = grant.CreationTime,
                         Expires = grant.Expiration,
                         IdentityGrantNames = resources.IdentityResources.Select(x => x.DisplayName ?? x.Name).ToArray(),
-                        ApiGrantNames = resources.ApiResources.Select(x => x.DisplayName ?? x.Name).ToArray(),
+                        ApiGrantNames = resources.ApiResources.Select(x => x.DisplayName ?? x.Name).ToArray()
                     };
 
                     list.Add(item);
