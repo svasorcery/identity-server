@@ -1,4 +1,5 @@
 ﻿using AspNet.Security.OAuth.GitHub;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -7,11 +8,11 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class GitHubAuthenticationExtensions
     {
-        public static IApplicationBuilder UseGitHubAuthentication(this IApplicationBuilder app, IConfiguration options)
+        public static AuthenticationBuilder AddGitHub(this AuthenticationBuilder builder, IConfiguration options)
         {
-            if (app == null)
+            if (builder == null)
             {
-                throw new ArgumentNullException(nameof(app));
+                throw new ArgumentNullException(nameof(builder));
             }
 
             if (options == null)
@@ -19,16 +20,16 @@ namespace Microsoft.Extensions.DependencyInjection
                 throw new ArgumentNullException(nameof(options));
             }
 
-            app.UseGitHubAuthentication(new GitHubAuthenticationOptions
+            /*builder.AddGitHub(new GitHubAuthenticationOptions
             {
                 DisplayName = options.GetSection("Name").Value,
                 ClientId = options.GetSection("ClientId").Value,
                 ClientSecret = options.GetSection("ClientSecret").Value,
                 AuthenticationScheme = GitHubAuthenticationDefaults.AuthenticationScheme,
                 SignInScheme = "idsrv.external"
-            });
+            });*/
 
-            return app;
+            return builder;
         }
     }
 }

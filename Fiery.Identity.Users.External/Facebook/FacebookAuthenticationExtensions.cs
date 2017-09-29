@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.Facebook;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Facebook;
 using Microsoft.Extensions.Configuration;
 using System;
 
@@ -7,11 +7,11 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class FacebookAuthenticationExtensions
     {
-        public static IApplicationBuilder UseFacebookAuthentication(this IApplicationBuilder app, IConfiguration options)
+        public static AuthenticationBuilder AddFacebook(this AuthenticationBuilder builder, IConfiguration options)
         {
-            if (app == null)
+            if (builder == null)
             {
-                throw new ArgumentNullException(nameof(app));
+                throw new ArgumentNullException(nameof(builder));
             }
 
             if (options == null)
@@ -19,16 +19,14 @@ namespace Microsoft.Extensions.DependencyInjection
                 throw new ArgumentNullException(nameof(options));
             }
 
-            app.UseFacebookAuthentication(new FacebookOptions
+            builder.AddFacebook(FacebookDefaults.AuthenticationScheme, options.GetSection("Name").Value, o =>
             {
-                DisplayName = options.GetSection("Name").Value,
-                ClientId = options.GetSection("ClientId").Value,
-                ClientSecret = options.GetSection("ClientSecret").Value,
-                AuthenticationScheme = FacebookDefaults.AuthenticationScheme,
-                SignInScheme = "idsrv.external"
+                o.ClientId = options.GetSection("ClientId").Value;
+                o.ClientSecret = options.GetSection("ClientSecret").Value;
+                o.SignInScheme = "idsrv.external";
             });
 
-            return app;
+            return builder;
         }
     }
 }

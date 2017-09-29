@@ -28,11 +28,11 @@
     }
     <li class="list-group-item">
         <label>access token</label>
-        <code style="word-wrap:break-word;">@await ViewContext.HttpContext.Authentication.GetTokenAsync("access_token")</code>
+        <code style="word-wrap:break-word;">@await ViewContext.HttpContext.GetTokenAsync("access_token")</code>
     </li>
 
     <li class="list-group-item">
         <label>refresh token</label>
-        <code>@await ViewContext.HttpContext.Authentication.GetTokenAsync("refresh_token")</code>
+        <code>@await ViewContext.HttpContext.GetTokenAsync("refresh_token")</code>
     </li>
 </ul>

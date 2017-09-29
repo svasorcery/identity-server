@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Configuration;
 using System;
 
@@ -6,11 +6,11 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class ExternalAuthenticationExtensions
     {
-        public static IApplicationBuilder UseExternalAuthentication(this IApplicationBuilder app, IConfiguration options)
+        public static AuthenticationBuilder AddExternal(this AuthenticationBuilder builder, IConfiguration options)
         {
-            if (app == null)
+            if (builder == null)
             {
-                throw new ArgumentNullException(nameof(app));
+                throw new ArgumentNullException(nameof(builder));
             }
 
             if (options == null)
@@ -18,14 +18,14 @@ namespace Microsoft.Extensions.DependencyInjection
                 throw new ArgumentNullException(nameof(options));
             }
 
-            app.UseGoogleAuthentication(options.GetSection("Google"));
-            app.UseMicrosoftAccountAuthentication(options.GetSection("Microsoft"));
-            app.UseTwitterAuthentication(options.GetSection("Twitter"));
-            app.UseFacebookAuthentication(options.GetSection("Facebook"));
-            app.UseGitHubAuthentication(options.GetSection("GitHub"));
-            app.UseVkontakteAuthentication(options.GetSection("VK"));
+            builder.AddGoogle(options.GetSection("Google"));
+            builder.AddMicrosoftAccount(options.GetSection("Microsoft"));
+            builder.AddTwitter(options.GetSection("Twitter"));
+            builder.AddFacebook(options.GetSection("Facebook"));
+            //builder.AddGitHub(options.GetSection("GitHub"));
+            //builder.AddVkontakte(options.GetSection("VK"));
 
-            return app;
+            return builder;
         }
     }
 }

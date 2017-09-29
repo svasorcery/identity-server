@@ -5,13 +5,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.Extensions.Configuration;
+using IdentityModel;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Fiery.Identity.Clients.ImplicitMvc
 {
@@ -35,6 +36,17 @@ namespace Fiery.Identity.Clients.ImplicitMvc
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<Models.OpenIdConnectAuthenticationOptions>(Configuration.GetSection("Oidc"));
+            
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+            })
+            .AddCookie(options => new CookieAuthenticationOptions()
+            {
+                ExpireTimeSpan = TimeSpan.FromMinutes(60),
+            })
+            .AddOpenIdConnect(options => SetOpenIdConnectOptions(options));
 
             services.AddMvc();
         }
@@ -58,32 +70,33 @@ namespace Fiery.Identity.Clients.ImplicitMvc
                 app.UseExceptionHandler("/Home/Error");
             }
 
-            app.UseCookieAuthentication(new CookieAuthenticationOptions
-            {
-                AuthenticationScheme = CookieAuthenticationDefaults.AuthenticationScheme //"Cookies"
-            });
-
-            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
-
-            app.UseOpenIdConnectAuthentication(new OpenIdConnectOptions
-            {
-                AuthenticationScheme = OpenIdConnectDefaults.AuthenticationScheme, //"oidc"
-                SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme,  //"Cookies"
-
-                Authority = Configuration["oidc:Authority"],
-                RequireHttpsMetadata = false,
-
-                ClientId = Configuration["oidc:ClientId"],
-                ClientSecret = Configuration["oidc:ClientSecret"],
-
-                ResponseType = OpenIdConnectResponseType.CodeIdToken,
-                Scope = { Configuration["oidc:Scope"], "offline_access" },
-
-                GetClaimsFromUserInfoEndpoint = true,
-                SaveTokens = true
-            });
+            app.UseAuthentication();
 
             app.UseMvcWithDefaultRoute();
+        }
+
+        private void SetOpenIdConnectOptions(OpenIdConnectOptions options)
+        {
+            options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+
+            options.Authority = Configuration["oidc:Authority"];
+            options.RequireHttpsMetadata = false;
+
+            options.ClientId = Configuration["oidc:ClientId"];
+            options.ClientSecret = Configuration["oidc:ClientSecret"];
+
+            options.ResponseType = OpenIdConnectResponseType.CodeIdToken;
+            options.GetClaimsFromUserInfoEndpoint = true;
+            options.SaveTokens = true;
+
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                NameClaimType = JwtClaimTypes.Name,
+                RoleClaimType = JwtClaimTypes.Role,
+            };
+
+            options.Scope.Add(Configuration["oidc:Scope"]);
+            options.Scope.Add("offline_access");
         }
     }
 }

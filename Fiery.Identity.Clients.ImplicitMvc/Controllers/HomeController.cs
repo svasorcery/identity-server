@@ -45,8 +45,8 @@ namespace Fiery.Identity.Clients.ImplicitMvc.Controllers
 
         public async Task<IActionResult> Logout()
         {
-            await HttpContext.Authentication.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            await HttpContext.Authentication.SignOutAsync(OpenIdConnectDefaults.AuthenticationScheme);
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            await HttpContext.SignOutAsync(OpenIdConnectDefaults.AuthenticationScheme);
 
             return Redirect("~/");
         }
@@ -66,7 +66,7 @@ namespace Fiery.Identity.Clients.ImplicitMvc.Controllers
 
         public async Task<IActionResult> CallApiUsingUserAccessToken()
         {
-            var accessToken = await HttpContext.Authentication.GetTokenAsync("access_token");
+            var accessToken = await HttpContext.GetTokenAsync("access_token");
 
             var client = new HttpClient();
             client.SetBearerToken(accessToken);
