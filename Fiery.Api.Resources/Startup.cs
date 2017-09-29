@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace Fiery.Api.Resources
 {
@@ -39,6 +40,20 @@ namespace Fiery.Api.Resources
                 });
             });
 
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddIdentityServerAuthentication(o =>
+            {
+                o.Authority = "http://localhost:50100";
+                o.RequireHttpsMetadata = false;
+
+                o.ApiName = "resources";
+                //o.AllowedScopes = { "resources" };
+            });
+
             services.AddMvcCore()
                 .AddAuthorization()
                 .AddJsonFormatters();
@@ -53,13 +68,7 @@ namespace Fiery.Api.Resources
             // this uses the policy called "default"
             app.UseCors("default");
 
-            app.UseIdentityServerAuthentication(new IdentityServerAuthenticationOptions
-            {
-                Authority = "http://localhost:50100",
-                RequireHttpsMetadata = false,
-                AllowedScopes = { "resources" },
-                ApiName = "resources"
-            });
+            app.UseAuthentication();
 
             app.UseMvc();
         }
