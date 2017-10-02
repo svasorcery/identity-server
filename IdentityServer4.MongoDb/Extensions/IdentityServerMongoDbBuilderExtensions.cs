@@ -35,6 +35,12 @@ namespace Microsoft.Extensions.DependencyInjection
         private static IIdentityServerBuilder AddConfigurationStore(
             this IIdentityServerBuilder builder)
         {
+            // Add Database Contexts
+            builder.Services.AddScoped<IClientDbContext, ClientDbContext>();
+
+            // Add Configuration Stores
+            builder.Services.AddTransient<IClientStore, ClientStore>();
+
             return builder;
         }
 
