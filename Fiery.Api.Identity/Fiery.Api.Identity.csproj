@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Fiery.Identity.Users.External\Fiery.Identity.Users.External.csproj" />
+    <ProjectReference Include="..\IdentityServer4.MongoDb\IdentityServer4.MongoDb.csproj" />
   </ItemGroup>
 
 </Project>
