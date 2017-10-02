@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.Google;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -7,11 +8,11 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class GoogleAuthenticationExtensions
     {
-        public static IApplicationBuilder UseGoogleAuthentication(this IApplicationBuilder app, IConfiguration options)
+        public static AuthenticationBuilder AddGoogle(this AuthenticationBuilder builder, IConfiguration options)
         {
-            if (app == null)
+            if (builder == null)
             {
-                throw new ArgumentNullException(nameof(app));
+                throw new ArgumentNullException(nameof(builder));
             }
 
             if (options == null)
@@ -19,16 +20,14 @@ namespace Microsoft.Extensions.DependencyInjection
                 throw new ArgumentNullException(nameof(options));
             }
 
-            app.UseGoogleAuthentication(new GoogleOptions
+            builder.AddGoogle(GoogleDefaults.AuthenticationScheme, options.GetSection("Name").Value, o =>
             {
-                DisplayName = options.GetSection("Name").Value,
-                ClientId = options.GetSection("ClientId").Value,
-                ClientSecret = options.GetSection("ClientSecret").Value,
-                AuthenticationScheme = GoogleDefaults.AuthenticationScheme,
-                SignInScheme = "idsrv.external"
+                o.ClientId = options.GetSection("ClientId").Value;
+                o.ClientSecret = options.GetSection("ClientSecret").Value;
+                o.SignInScheme = "idsrv.external";
             });
 
-            return app;
+            return builder;
         }
     }
 }
