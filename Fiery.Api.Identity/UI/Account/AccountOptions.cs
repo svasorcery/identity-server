@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace IdentityServer4.Quickstart.UI
+namespace Fiery.Api.Identity.UI
 {
     public class AccountOptions
     {
