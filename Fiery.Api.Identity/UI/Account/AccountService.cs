@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Http;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace IdentityServer4.Quickstart.UI
+namespace Fiery.Api.Identity.UI
 {
     public class AccountService
     {
