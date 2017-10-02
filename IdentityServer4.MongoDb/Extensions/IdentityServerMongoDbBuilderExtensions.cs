@@ -37,10 +37,12 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             // Add Database Contexts
             builder.Services.AddScoped<IClientDbContext, ClientDbContext>();
+            builder.Services.AddScoped<IResourceDbContext, ResourceDbContext>();
             builder.Services.AddScoped<IScopeDbContext, ScopeDbContext>();
 
             // Add Configuration Stores
             builder.Services.AddTransient<IClientStore, ClientStore>();
+            builder.Services.AddTransient<IResourceStore, ResourceStore>();
 
             return builder;
         }
