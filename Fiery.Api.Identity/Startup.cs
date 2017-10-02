@@ -9,6 +9,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using IdentityServer4.MongoDb.Abstractions;
+using IdentityServer4.MongoDb.Mappers;
+using IdentityServer4.MongoDb.Services;
+using IdentityServer4.MongoDb.Configurations;
 
 namespace Fiery.Api.Identity
 {
@@ -38,9 +43,8 @@ namespace Fiery.Api.Identity
             services.AddIdentityServer()
                 .AddDeveloperSigningCredential()
                 .AddTestUsers(Configurations.Users.Get())
-                .AddInMemoryClients(Configurations.Clients.Get())
-                .AddInMemoryApiResources(Configurations.Resources.GetApi())
-                .AddInMemoryIdentityResources(Configurations.Resources.GetIdentity());
+                .AddConfigurationStore(Configuration.GetSection("Databases:MongoDb"))
+                .AddOperationalStore(Configuration.GetSection("Databases:MongoDb"));
 
             services.AddAuthentication()
                 .AddExternal(Configuration.GetSection("Authentication:ExternalProviders"));
@@ -53,6 +57,9 @@ namespace Fiery.Api.Identity
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
+            // this will do the initial DB population
+            InitializeDatabase(app);
+
             loggerFactory.AddConsole();
 
             if (env.IsDevelopment())
@@ -71,6 +78,61 @@ namespace Fiery.Api.Identity
             app.UseStaticFiles();
 
             app.UseMvcWithDefaultRoute();
+        }
+
+
+        private void InitializeDatabase(IApplicationBuilder app)
+        {
+            using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            {
+                // Seed Clients
+                var clientDbContext = serviceScope.ServiceProvider.GetService<IClientDbContext>();
+                if (!clientDbContext.AllAsync.Any())
+                {
+                    var clients = Configurations.Clients.Get();
+                    foreach (var client in clients)
+                    {
+                        clientDbContext.AddAsync(client.ToEntity());
+                    }
+                }
+
+                // Seed Resources
+                var resourceDbContext = serviceScope.ServiceProvider.GetService<IResourceDbContext>();
+                // Identity Resources
+                if (!resourceDbContext.IdentityResources.Any())
+                {
+                    var identities = Configurations.Resources.GetIdentity();
+                    foreach (var identity in identities)
+                    {
+                        resourceDbContext.StoreIdentityAsync(identity.ToEntity());
+                    }
+                }
+                // API Resources
+                if (!resourceDbContext.ApiResources.Any())
+                {
+                    var apis = Configurations.Resources.GetApi();
+                    foreach (var api in apis)
+                    {
+                        resourceDbContext.StoreApiAsync(api.ToEntity());
+                    }
+                }
+
+                // Seed API Resource Scopes
+                var scopeDbContext = serviceScope.ServiceProvider.GetService<IScopeDbContext>();
+                if (!scopeDbContext.Scopes.Any())
+                {
+                    var scopes = Configurations.Resources.GetApiScopes();
+                    foreach (var scope in scopes)
+                    {
+                        scopeDbContext.StoreAsync(scope.ToEntity());
+                    }
+                }
+
+                // Token expired cleanup
+                var options = serviceScope.ServiceProvider.GetService<IOptions<MongoDbRepositoryConfiguration>>();
+                var tokenCleanup = new TokenCleanupService(options);
+                tokenCleanup.Start();
+            }
         }
     }
 }

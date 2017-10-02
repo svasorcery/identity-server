@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.16
+VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fiery.Api.Identity", "Fiery.Api.Identity\Fiery.Api.Identity.csproj", "{5DECAECD-E8D9-43C0-B5B5-18352A353B88}"
 EndProject
@@ -17,7 +17,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fiery.Identity.Clients.Impl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fiery.Identity.Users.External", "Fiery.Identity.Users.External\Fiery.Identity.Users.External.csproj", "{6C453124-F9D7-47F2-9C1B-E2F5EC917CD5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fiery.Identity.Users.AspNetCore", "Fiery.Identity.Users.AspNetCore\Fiery.Identity.Users.AspNetCore.csproj", "{1CA6620A-864B-4142-BAE1-F944E9EF311D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fiery.Identity.Users.AspNetCore", "Fiery.Identity.Users.AspNetCore\Fiery.Identity.Users.AspNetCore.csproj", "{1CA6620A-864B-4142-BAE1-F944E9EF311D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer4.MongoDb", "IdentityServer4.MongoDb\IdentityServer4.MongoDb.csproj", "{713CDFDE-2B94-4B90-9037-BDFD73630A7D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -125,8 +127,23 @@ Global
 		{1CA6620A-864B-4142-BAE1-F944E9EF311D}.Release|x64.Build.0 = Release|Any CPU
 		{1CA6620A-864B-4142-BAE1-F944E9EF311D}.Release|x86.ActiveCfg = Release|Any CPU
 		{1CA6620A-864B-4142-BAE1-F944E9EF311D}.Release|x86.Build.0 = Release|Any CPU
+		{713CDFDE-2B94-4B90-9037-BDFD73630A7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{713CDFDE-2B94-4B90-9037-BDFD73630A7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{713CDFDE-2B94-4B90-9037-BDFD73630A7D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{713CDFDE-2B94-4B90-9037-BDFD73630A7D}.Debug|x64.Build.0 = Debug|Any CPU
+		{713CDFDE-2B94-4B90-9037-BDFD73630A7D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{713CDFDE-2B94-4B90-9037-BDFD73630A7D}.Debug|x86.Build.0 = Debug|Any CPU
+		{713CDFDE-2B94-4B90-9037-BDFD73630A7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{713CDFDE-2B94-4B90-9037-BDFD73630A7D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{713CDFDE-2B94-4B90-9037-BDFD73630A7D}.Release|x64.ActiveCfg = Release|Any CPU
+		{713CDFDE-2B94-4B90-9037-BDFD73630A7D}.Release|x64.Build.0 = Release|Any CPU
+		{713CDFDE-2B94-4B90-9037-BDFD73630A7D}.Release|x86.ActiveCfg = Release|Any CPU
+		{713CDFDE-2B94-4B90-9037-BDFD73630A7D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {714B6758-D2B7-45D3-834E-03B3B9808DF7}
 	EndGlobalSection
 EndGlobal
