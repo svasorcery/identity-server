@@ -38,9 +38,8 @@ namespace Fiery.Api.Identity
             services.AddIdentityServer()
                 .AddDeveloperSigningCredential()
                 .AddTestUsers(Configurations.Users.Get())
-                .AddInMemoryClients(Configurations.Clients.Get())
-                .AddInMemoryApiResources(Configurations.Resources.GetApi())
-                .AddInMemoryIdentityResources(Configurations.Resources.GetIdentity());
+                .AddConfigurationStore(Configuration.GetSection("Databases:MongoDb"))
+                .AddOperationalStore(Configuration.GetSection("Databases:MongoDb"));
 
             services.AddAuthentication()
                 .AddExternal(Configuration.GetSection("Authentication:ExternalProviders"));
