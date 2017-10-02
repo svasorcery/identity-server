@@ -37,6 +37,7 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             // Add Database Contexts
             builder.Services.AddScoped<IClientDbContext, ClientDbContext>();
+            builder.Services.AddScoped<IScopeDbContext, ScopeDbContext>();
 
             // Add Configuration Stores
             builder.Services.AddTransient<IClientStore, ClientStore>();
