@@ -43,6 +43,7 @@ namespace Microsoft.Extensions.DependencyInjection
             // Add Configuration Stores
             builder.Services.AddTransient<IClientStore, ClientStore>();
             builder.Services.AddTransient<IResourceStore, ResourceStore>();
+            builder.Services.AddTransient<ICorsPolicyService, CorsPolicyService>();
 
             return builder;
         }
