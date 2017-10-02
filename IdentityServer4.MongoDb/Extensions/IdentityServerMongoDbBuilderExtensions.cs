@@ -71,6 +71,12 @@ namespace Microsoft.Extensions.DependencyInjection
         private static IIdentityServerBuilder AddOperationalStore(
             this IIdentityServerBuilder builder)
         {
+            // Add Database Contexts
+            builder.Services.AddScoped<IPersistedGrantDbContext, PersistedGrantDbContext>();
+
+            // Add Operational Stores
+            builder.Services.AddTransient<IPersistedGrantStore, PersistedGrantStore>();
+
             return builder;
         }
 
