@@ -14,6 +14,7 @@ using IdentityServer4.MongoDb.Abstractions;
 using IdentityServer4.MongoDb.Mappers;
 using IdentityServer4.MongoDb.Services;
 using IdentityServer4.MongoDb.Configurations;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Fiery.Api.Identity
 {
@@ -41,7 +42,7 @@ namespace Fiery.Api.Identity
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddIdentityServer()
-                .AddDeveloperSigningCredential()
+                .AddSigningCredential(new X509Certificate2(Configuration["PrimaryCert"], "T5er41E2bf7im0f1Rt3VW637Hjki083f4G4n4N6d80Rty7uBe0"))
                 .AddTestUsers(Configurations.Users.Get())
                 .AddConfigurationStore(Configuration.GetSection("Databases:MongoDb"))
                 .AddOperationalStore(Configuration.GetSection("Databases:MongoDb"));
