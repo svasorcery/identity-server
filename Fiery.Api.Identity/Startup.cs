@@ -39,20 +39,34 @@ namespace Fiery.Api.Identity
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            services.AddIdentityServer()
-                .AddSigningCredential(new X509Certificate2(Configuration["PrimaryCert"], "T5er41E2bf7im0f1Rt3VW637Hjki083f4G4n4N6d80Rty7uBe0"))
-                .AddTestUsers(Configurations.Users.Get())
-                .AddConfigurationStore(Configuration.GetSection("Databases:MongoDb"))
-                .AddOperationalStore(Configuration.GetSection("Databases:MongoDb"));
-
-            services.AddAuthentication()
-                .AddExternal(Configuration.GetSection("Authentication:ExternalProviders"));
-
             // Add Mvc with custom views location
             services.AddMvc()
                 .AddRazorOptions(razor => razor.ViewLocationExpanders.Add(new UI.CustomViewLocationExpander()));
+
+            services.Configure<IISOptions>(iis =>
+            {
+                iis.AuthenticationDisplayName = "Windows";
+                iis.AutomaticAuthentication = false;
+            });
+
+            services.AddIdentityServer(options =>
+                {
+                    options.Events.RaiseSuccessEvents = true;
+                    options.Events.RaiseFailureEvents = true;
+                    options.Events.RaiseErrorEvents = true;
+                })
+                .AddConfigurationStore(Configuration.GetSection("Databases:MongoDb"))
+                .AddOperationalStore(Configuration.GetSection("Databases:MongoDb"))
+                .AddSigningCredential(new X509Certificate2(Configuration["PrimaryCert"], "T5er41E2bf7im0f1Rt3VW637Hjki083f4G4n4N6d80Rty7uBe0"))
+                .AddJwtBearerClientAuthentication()
+                .AddAppAuthRedirectUriValidator()
+                .AddTestUsers(Configurations.Users.Get());
+
+            services.AddExternalIdentityProviders(Configuration.GetSection("Authentication:ExternalProviders"));
+
+            return services.BuildServiceProvider(validateScopes: true);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -73,8 +87,6 @@ namespace Fiery.Api.Identity
             }
 
             app.UseIdentityServer();
-
-            app.UseAuthentication();
 
             app.UseStaticFiles();
 
