@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Globalization;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Security.Cryptography.X509Certificates;
@@ -27,9 +31,35 @@ namespace Fiery.Api.Identity
             services.AddDbContext<Data.ApplicationDbContext>(options =>
                 options.UseSqlite(Configuration.GetSection("Databases:Sqlite:ConnectionString").Value));
 
+            services.AddSingleton<Services.LocalizationService>();
+            services.AddLocalization(options => options.ResourcesPath = "SharedResources");
+
+            services.AddAuthentication();
+
             services.AddIdentity<Models.ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<Data.ApplicationDbContext>()
                 .AddDefaultTokenProviders();
+
+            services.Configure<RequestLocalizationOptions>(
+                options =>
+                {
+                    var supportedCultures = new List<CultureInfo>
+                    {
+                        new CultureInfo("en-US"),
+                        new CultureInfo("ru-RU")
+                    };
+
+                    options.DefaultRequestCulture = new RequestCulture(culture: "ru-RU", uiCulture: "ru-RU");
+                    options.SupportedCultures = supportedCultures;
+                    options.SupportedUICultures = supportedCultures;
+
+                    options.RequestCultureProviders.Clear();
+                    var provider = new Services.LocalizationCookieProvider
+                    {
+                        CookieName = "defaultLocale"
+                    };
+                    options.RequestCultureProviders.Insert(0, provider);
+                });
 
             // Add Mvc with custom views location
             services.AddMvc()
@@ -74,6 +104,9 @@ namespace Fiery.Api.Identity
             {
                 app.UseExceptionHandler("/Error");
             }
+
+            var locOptions = app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>();
+            app.UseRequestLocalization(locOptions.Value);
 
             app.UseIdentityServer();
 
