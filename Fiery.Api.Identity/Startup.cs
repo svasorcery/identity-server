@@ -9,6 +9,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using IdentityServer4.MongoDb.Abstractions;
+using IdentityServer4.MongoDb.Mappers;
+using IdentityServer4.MongoDb.Services;
+using IdentityServer4.MongoDb.Configurations;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Fiery.Api.Identity
 {
@@ -33,26 +39,42 @@ namespace Fiery.Api.Identity
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            services.AddIdentityServer()
-                .AddDeveloperSigningCredential()
-                .AddTestUsers(Configurations.Users.Get())
-                .AddInMemoryClients(Configurations.Clients.Get())
-                .AddInMemoryApiResources(Configurations.Resources.GetApi())
-                .AddInMemoryIdentityResources(Configurations.Resources.GetIdentity());
-
-            services.AddAuthentication()
-                .AddExternal(Configuration.GetSection("Authentication:ExternalProviders"));
-
             // Add Mvc with custom views location
             services.AddMvc()
                 .AddRazorOptions(razor => razor.ViewLocationExpanders.Add(new UI.CustomViewLocationExpander()));
+
+            services.Configure<IISOptions>(iis =>
+            {
+                iis.AuthenticationDisplayName = "Windows";
+                iis.AutomaticAuthentication = false;
+            });
+
+            services.AddIdentityServer(options =>
+                {
+                    options.Events.RaiseSuccessEvents = true;
+                    options.Events.RaiseFailureEvents = true;
+                    options.Events.RaiseErrorEvents = true;
+                })
+                .AddConfigurationStore(Configuration.GetSection("Databases:MongoDb"))
+                .AddOperationalStore(Configuration.GetSection("Databases:MongoDb"))
+                .AddSigningCredential(new X509Certificate2(Configuration["PrimaryCert"], "T5er41E2bf7im0f1Rt3VW637Hjki083f4G4n4N6d80Rty7uBe0"))
+                .AddJwtBearerClientAuthentication()
+                .AddAppAuthRedirectUriValidator()
+                .AddTestUsers(Configurations.Users.Get());
+
+            services.AddExternalIdentityProviders(Configuration.GetSection("Authentication:ExternalProviders"));
+
+            return services.BuildServiceProvider(validateScopes: true);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
+            // this will do the initial DB population
+            InitializeDatabase(app);
+
             loggerFactory.AddConsole();
 
             if (env.IsDevelopment())
@@ -66,11 +88,64 @@ namespace Fiery.Api.Identity
 
             app.UseIdentityServer();
 
-            app.UseAuthentication();
-
             app.UseStaticFiles();
 
             app.UseMvcWithDefaultRoute();
+        }
+
+
+        private void InitializeDatabase(IApplicationBuilder app)
+        {
+            using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            {
+                // Seed Clients
+                var clientDbContext = serviceScope.ServiceProvider.GetService<IClientDbContext>();
+                if (!clientDbContext.AllAsync.Any())
+                {
+                    var clients = Configurations.Clients.Get();
+                    foreach (var client in clients)
+                    {
+                        clientDbContext.AddAsync(client.ToEntity());
+                    }
+                }
+
+                // Seed Resources
+                var resourceDbContext = serviceScope.ServiceProvider.GetService<IResourceDbContext>();
+                // Identity Resources
+                if (!resourceDbContext.IdentityResources.Any())
+                {
+                    var identities = Configurations.Resources.GetIdentity();
+                    foreach (var identity in identities)
+                    {
+                        resourceDbContext.StoreIdentityAsync(identity.ToEntity());
+                    }
+                }
+                // API Resources
+                if (!resourceDbContext.ApiResources.Any())
+                {
+                    var apis = Configurations.Resources.GetApi();
+                    foreach (var api in apis)
+                    {
+                        resourceDbContext.StoreApiAsync(api.ToEntity());
+                    }
+                }
+
+                // Seed API Resource Scopes
+                var scopeDbContext = serviceScope.ServiceProvider.GetService<IScopeDbContext>();
+                if (!scopeDbContext.Scopes.Any())
+                {
+                    var scopes = Configurations.Resources.GetApiScopes();
+                    foreach (var scope in scopes)
+                    {
+                        scopeDbContext.StoreAsync(scope.ToEntity());
+                    }
+                }
+
+                // Token expired cleanup
+                var options = serviceScope.ServiceProvider.GetService<IOptions<MongoDbRepositoryConfiguration>>();
+                var tokenCleanup = new TokenCleanupService(options);
+                tokenCleanup.Start();
+            }
         }
     }
 }

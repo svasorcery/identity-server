@@ -17,7 +17,7 @@ using IdentityServer4.Models;
 using Fiery.Api.Identity.UI;
 using Fiery.Api.Identity.Filters;
 
-namespace IdentityServer4.Quickstart.UI
+namespace Fiery.Api.Identity.UI
 {
     /// <summary>
     /// This sample controller implements a typical login/logout/provision workflow for local and external accounts.
