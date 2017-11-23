@@ -1,24 +1,25 @@
-﻿using IdentityModel;
-using IdentityServer4.Services;
-using IdentityServer4.Stores;
-using IdentityServer4.Test;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Security.Claims;
 using System.Security.Principal;
-using System.Threading.Tasks;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication;
-using IdentityServer4.Events;
-using IdentityServer4.Extensions;
+using IdentityModel;
 using IdentityServer4.Models;
-using Fiery.Api.Identity.UI;
-using Fiery.Api.Identity.Filters;
+using IdentityServer4.Stores;
+using IdentityServer4.Events;
+using IdentityServer4.Services;
+using IdentityServer4.Extensions;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Fiery.Api.Identity.UI
 {
+    using Fiery.Api.Identity.Models;
+    using Fiery.Api.Identity.Filters;
+    
     /// <summary>
     /// This sample controller implements a typical login/logout/provision workflow for local and external accounts.
     /// The login service encapsulates the interactions with the user data store. This data store is in-memory only and cannot be used for production!
@@ -27,21 +28,23 @@ namespace Fiery.Api.Identity.UI
     [SecurityHeaders]
     public class AccountController : Controller
     {
-        private readonly TestUserStore _users;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IIdentityServerInteractionService _interaction;
         private readonly IEventService _events;
         private readonly AccountService _account;
 
         public AccountController(
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
             IIdentityServerInteractionService interaction,
             IClientStore clientStore,
             IHttpContextAccessor httpContextAccessor,
             IAuthenticationSchemeProvider schemeProvider,
-            IEventService events,
-            TestUserStore users = null)
+            IEventService events)
         {
-            // if the TestUserStore is not in DI, then we'll just use the global users collection
-            _users = users ?? new TestUserStore(Fiery.Api.Identity.Configurations.Users.Get());
+            _userManager = userManager;
+            _signInManager = signInManager;
             _interaction = interaction;
             _events = events;
             _account = new AccountService(interaction, httpContextAccessor, schemeProvider, clientStore);
@@ -95,25 +98,11 @@ namespace Fiery.Api.Identity.UI
 
             if (ModelState.IsValid)
             {
-                // validate username/password against in-memory store
-                if (_users.ValidateCredentials(model.Username, model.Password))
+                var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberLogin, lockoutOnFailure: true);
+                if (result.Succeeded)
                 {
-                    var user = _users.FindByUsername(model.Username);
-                    await _events.RaiseAsync(new UserLoginSuccessEvent(user.Username, user.SubjectId, user.Username));
-
-                    // only set explicit expiration here if user chooses "remember me". 
-                    // otherwise we rely upon expiration configured in cookie middleware.
-                    AuthenticationProperties props = null;
-                    if (AccountOptions.AllowRememberLogin && model.RememberLogin)
-                    {
-                        props = new AuthenticationProperties
-                        {
-                            IsPersistent = true,
-                            ExpiresUtc = DateTimeOffset.UtcNow.Add(AccountOptions.RememberMeLoginDuration)
-                        };
-                    };
-                    // issue authentication cookie with subject ID and username
-                    await HttpContext.SignInAsync(user.SubjectId, user.Username, props);
+                    var user = await _userManager.FindByNameAsync(model.Username);
+                    await _events.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id, user.UserName));
 
                     // make sure the returnUrl is still valid, and if so redirect back to authorize endpoint or a local page
                     if (_interaction.IsValidReturnUrl(model.ReturnUrl) || Url.IsLocalUrl(model.ReturnUrl))
@@ -233,12 +222,23 @@ namespace Fiery.Api.Identity.UI
             // external provider's authentication result, and provision the user as you see fit.
             // 
             // check if the external user is already provisioned
-            var user = _users.FindByExternalProvider(provider, userId);
+            var user = await _userManager.FindByLoginAsync(provider, userId);
             if (user == null)
             {
                 // this sample simply auto-provisions new external user
                 // another common approach is to start a registrations workflow first
-                user = _users.AutoProvisionUser(provider, userId, claims);
+                // a common way to build a registration page is to use the claims from the 
+                // external provider to pre-populate a registration screen, and then store those
+                // as claims (or custom properties) in the ASP.NET Identity database.
+                user = new ApplicationUser
+                {
+                    UserName = Guid.NewGuid().ToString(),
+                };
+                var identityResult = await _userManager.CreateAsync(user);
+                if (!identityResult.Succeeded) throw new Exception(identityResult.Errors.First().Description);
+
+                identityResult = await _userManager.AddLoginAsync(user, new UserLoginInfo(provider, userId, provider));
+                if (!identityResult.Succeeded) throw new Exception(identityResult.Errors.First().Description);
             }
 
             var additionalClaims = new List<Claim>();
@@ -260,9 +260,13 @@ namespace Fiery.Api.Identity.UI
                 props.StoreTokens(new[] { new AuthenticationToken { Name = "id_token", Value = id_token } });
             }
 
+            var name = externalUser.FindFirst(JwtClaimTypes.Name)?.Value;
+            if (name == null) name = externalUser.FindFirst(ClaimTypes.Name)?.Value;
+            if (name == null) name = user.Id;
+
             // issue authentication cookie for user
-            await _events.RaiseAsync(new UserLoginSuccessEvent(provider, userId, user.SubjectId, user.Username));
-            await HttpContext.SignInAsync(user.SubjectId, user.Username, provider, props, additionalClaims.ToArray());
+            await _events.RaiseAsync(new UserLoginSuccessEvent(provider, userId, user.Id, name));
+            await HttpContext.SignInAsync(user.Id, name, provider, props, additionalClaims.ToArray());
 
             // delete temporary cookie used during external authentication
             await HttpContext.SignOutAsync(IdentityServer4.IdentityServerConstants.ExternalCookieAuthenticationScheme);
@@ -310,10 +314,10 @@ namespace Fiery.Api.Identity.UI
             if (user?.Identity.IsAuthenticated == true)
             {
                 // delete local authentication cookie
-                await HttpContext.SignOutAsync();
+                await _signInManager.SignOutAsync();
 
                 // raise the logout event
-                await _events.RaiseAsync(new UserLogoutSuccessEvent(user.GetSubjectId(), user.GetName()));
+                await _events.RaiseAsync(new UserLogoutSuccessEvent(user.GetSubjectId(), user.GetDisplayName()));
             }
 
             // check if we need to trigger sign-out at an upstream identity provider

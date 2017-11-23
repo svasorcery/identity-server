@@ -1,12 +1,12 @@
-﻿using Fiery.Api.Identity.UI;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 using IdentityModel;
 using IdentityServer4.Extensions;
 using IdentityServer4.Services;
 using IdentityServer4.Stores;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Fiery.Api.Identity.UI
 {
@@ -47,7 +47,10 @@ namespace Fiery.Api.Identity.UI
             var schemes = await _schemeProvider.GetAllSchemesAsync();
 
             var providers = schemes
-                .Where(x => x.DisplayName != null)
+                .Where(x => x.DisplayName != null ||
+                            (AccountOptions.WindowsAuthenticationEnabled &&
+                             x.Name.Equals(AccountOptions.WindowsAuthenticationSchemeName, StringComparison.OrdinalIgnoreCase))
+                )
                 .Select(x => new ExternalProvider
                 {
                     DisplayName = x.DisplayName,
