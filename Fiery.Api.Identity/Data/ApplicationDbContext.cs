@@ -1,9 +1,10 @@
-﻿using Fiery.Identity.Users.AspNetCore.Models;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
 
-namespace Fiery.Identity.Users.AspNetCore.Data
+namespace Fiery.Api.Identity.Data
 {
+    using Fiery.Api.Identity.Models;
+
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
