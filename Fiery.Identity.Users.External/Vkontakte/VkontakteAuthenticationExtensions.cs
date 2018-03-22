@@ -1,6 +1,5 @@
 ﻿using AspNet.Security.OAuth.Vkontakte;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using System;
 
@@ -20,14 +19,12 @@ namespace Microsoft.Extensions.DependencyInjection
                 throw new ArgumentNullException(nameof(options));
             }
 
-            /*builder.AddVkontakte(new VkontakteAuthenticationOptions
+            builder.AddVkontakte(VkontakteAuthenticationDefaults.AuthenticationScheme, options.GetSection("Name").Value, o =>
             {
-                DisplayName = options.GetSection("Name").Value,
-                ClientId = options.GetSection("ClientId").Value,
-                ClientSecret = options.GetSection("ClientSecret").Value,
-                AuthenticationScheme = VkontakteAuthenticationDefaults.AuthenticationScheme,
-                SignInScheme = "idsrv.external"
-            });*/
+                o.ClientId = options.GetSection("ClientId").Value;
+                o.ClientSecret = options.GetSection("ClientSecret").Value;
+                o.SignInScheme = "idsrv.external";
+            });
 
             return builder;
         }
